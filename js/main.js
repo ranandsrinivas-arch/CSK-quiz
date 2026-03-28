@@ -23,7 +23,6 @@ class CSKQuiz {
             document.getElementById('total').textContent = this.questions.length;
         } catch (error) {
             console.error('Error loading questions:', error);
-            alert('Failed to load quiz questions!');
         }
     }
 
@@ -39,6 +38,15 @@ class CSKQuiz {
         const question = this.questions[this.currentQuestionIndex];
         document.getElementById('currentQuestion').textContent = this.currentQuestionIndex + 1;
         document.getElementById('questionText').textContent = question.question;
+        
+        // Display image if it exists
+        const mediaSection = document.getElementById('mediaSection');
+        if (question.image) {
+            mediaSection.innerHTML = `<img src="${question.image}" alt="Question image" style="max-width: 100%; height: auto; border-radius: 8px;">`;
+        } else {
+            mediaSection.innerHTML = '';
+        }
+        
         this.displayOptions(question);
         this.updateButtons();
         this.answered = false;
@@ -70,6 +78,13 @@ class CSKQuiz {
         button.classList.add('selected');
         this.userAnswers[this.currentQuestionIndex] = index;
         this.answered = true;
+
+        // Update score display immediately
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (index === currentQuestion.answer) {
+            this.score++;
+            document.getElementById('score').textContent = this.score;
+        }
 
         if (this.timer) {
             this.timer.stop();
